@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        #map {
+            width: 762px;
+            height: 571px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/Pemukiman_1.js"></script>
+        <script src="data/Hutan_2.js"></script>
+        <script src="data/BatasKecamatan_3.js"></script>
+        <script src="data/Jalan_4.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[-7.992489081581991,112.3332842896899],[-7.699659181704381,112.72810696191326]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+          var tagName = event.target.tagName,
+            popup = map._popup;
+          // Also check if flag is already set.
+          if (tagName === "IMG" && popup && !popup._updated) {
+            popup._updated = true; // Set flag to prevent looping.
+            popup.update();
+          }
+        }, true);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleSatellite_0');
+        map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
+        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleSatellite_0;
+        map.addLayer(layer_GoogleSatellite_0);
+        function pop_Pemukiman_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_Pemukiman_1_0() {
+            return {
+                pane: 'pane_Pemukiman_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,158,23,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Pemukiman_1');
+        map.getPane('pane_Pemukiman_1').style.zIndex = 401;
+        map.getPane('pane_Pemukiman_1').style['mix-blend-mode'] = 'normal';
+        var layer_Pemukiman_1 = new L.geoJson(json_Pemukiman_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Pemukiman_1',
+            layerName: 'layer_Pemukiman_1',
+            pane: 'pane_Pemukiman_1',
+            onEachFeature: pop_Pemukiman_1,
+            style: style_Pemukiman_1_0,
+        });
+        bounds_group.addLayer(layer_Pemukiman_1);
+        map.addLayer(layer_Pemukiman_1);
+        function pop_Hutan_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_Hutan_2_0() {
+            return {
+                pane: 'pane_Hutan_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(91,164,88,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Hutan_2');
+        map.getPane('pane_Hutan_2').style.zIndex = 402;
+        map.getPane('pane_Hutan_2').style['mix-blend-mode'] = 'normal';
+        var layer_Hutan_2 = new L.geoJson(json_Hutan_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Hutan_2',
+            layerName: 'layer_Hutan_2',
+            pane: 'pane_Hutan_2',
+            onEachFeature: pop_Hutan_2,
+            style: style_Hutan_2_0,
+        });
+        bounds_group.addLayer(layer_Hutan_2);
+        map.addLayer(layer_Hutan_2);
+        function pop_BatasKecamatan_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMA_KECAM'] !== null ? autolinker.link(feature.properties['NAMA_KECAM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['JUMLAH_PEN'] !== null ? autolinker.link(feature.properties['JUMLAH_PEN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUAS_WILAY'] !== null ? autolinker.link(feature.properties['LUAS_WILAY'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['kepadatan'] !== null ? autolinker.link(feature.properties['kepadatan'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_BatasKecamatan_3_0() {
+            return {
+                pane: 'pane_BatasKecamatan_3',
+                opacity: 1,
+                color: 'rgba(227,26,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_BatasKecamatan_3');
+        map.getPane('pane_BatasKecamatan_3').style.zIndex = 403;
+        map.getPane('pane_BatasKecamatan_3').style['mix-blend-mode'] = 'normal';
+        var layer_BatasKecamatan_3 = new L.geoJson(json_BatasKecamatan_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_BatasKecamatan_3',
+            layerName: 'layer_BatasKecamatan_3',
+            pane: 'pane_BatasKecamatan_3',
+            onEachFeature: pop_BatasKecamatan_3,
+            style: style_BatasKecamatan_3_0,
+        });
+        bounds_group.addLayer(layer_BatasKecamatan_3);
+        map.addLayer(layer_BatasKecamatan_3);
+        function pop_Jalan_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_Jalan_4_0() {
+            return {
+                pane: 'pane_Jalan_4',
+                opacity: 1,
+                color: 'rgba(243,166,178,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Jalan_4');
+        map.getPane('pane_Jalan_4').style.zIndex = 404;
+        map.getPane('pane_Jalan_4').style['mix-blend-mode'] = 'normal';
+        var layer_Jalan_4 = new L.geoJson(json_Jalan_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Jalan_4',
+            layerName: 'layer_Jalan_4',
+            pane: 'pane_Jalan_4',
+            onEachFeature: pop_Jalan_4,
+            style: style_Jalan_4_0,
+        });
+        bounds_group.addLayer(layer_Jalan_4);
+        map.addLayer(layer_Jalan_4);
+        var baseMaps = {};
+        var overlaysTree = [
+            {label: '<img src="legend/Jalan_4.png" /> Jalan', layer: layer_Jalan_4},
+            {label: '<img src="legend/BatasKecamatan_3.png" /> Batas Kecamatan', layer: layer_BatasKecamatan_3},
+            {label: '<img src="legend/Hutan_2.png" /> Hutan', layer: layer_Hutan_2},
+            {label: '<img src="legend/Pemukiman_1.png" /> Pemukiman', layer: layer_Pemukiman_1},
+            {label: "Google Satellite", layer: layer_GoogleSatellite_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
